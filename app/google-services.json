@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "447747559339",
+    "project_id": "compose-currency-converter",
+    "storage_bucket": "compose-currency-converter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:447747559339:android:c395b76f4c0d921cd60cee",
+        "android_client_info": {
+          "package_name": "com.tclow.composecurrencyconverter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "447747559339-ca84svu8608gk3pogipbchf56l2ge7tk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBF7-Up5MpQPHf9CuBaGlmQFWccz99YSE4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "447747559339-ca84svu8608gk3pogipbchf56l2ge7tk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
