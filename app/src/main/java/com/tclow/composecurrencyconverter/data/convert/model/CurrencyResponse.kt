@@ -1,4 +1,4 @@
-package com.tclow.composecurrencyconverter.data.model
+package com.tclow.composecurrencyconverter.data.convert.model
 
 data class CurrencyResponse (
     val base: String,

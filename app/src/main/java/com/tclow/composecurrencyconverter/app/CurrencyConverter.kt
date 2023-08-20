@@ -1,4 +1,4 @@
-package com.tclow.composecurrencyconverter
+package com.tclow.composecurrencyconverter.app
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

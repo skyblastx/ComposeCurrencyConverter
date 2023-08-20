@@ -1,6 +1,6 @@
-package com.tclow.composecurrencyconverter.domain.repository
+package com.tclow.composecurrencyconverter.domain.convert.repository
 
-import com.tclow.composecurrencyconverter.data.model.CurrencyResponse
+import com.tclow.composecurrencyconverter.data.convert.model.CurrencyResponse
 import com.tclow.composecurrencyconverter.utils.Resource
 
 interface CurrencyRepository {

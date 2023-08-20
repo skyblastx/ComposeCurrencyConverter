@@ -1,6 +1,6 @@
-package com.tclow.composecurrencyconverter.data
+package com.tclow.composecurrencyconverter.data.convert
 
-import com.tclow.composecurrencyconverter.data.model.CurrencyResponse
+import com.tclow.composecurrencyconverter.data.convert.model.CurrencyResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
