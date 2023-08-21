@@ -1,5 +1,9 @@
 package com.tclow.composecurrencyconverter.presentation.login
 
+import android.content.Intent
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,11 +32,14 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.tclow.composecurrencyconverter.presentation.login.model.LoginViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun LoginScreen() {
-    // TODO: Login Screen
+fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()) {
+
     var userId by remember {
         mutableStateOf("")
     }
@@ -45,6 +52,7 @@ fun LoginScreen() {
         mutableStateOf(false)
     }
     val keyboardController = LocalSoftwareKeyboardController.current
+    val layoutInformation by viewModel.layoutInformationFlow.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -83,28 +91,54 @@ fun LoginScreen() {
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        Row(
-            modifier = Modifier.fillMaxWidth(0.8F),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.End
-        ) {
+        //CustomRow(layoutInformation = layoutInformation!!)
+    }
+}
+
+data class LayoutMeta(
+    val hasAboutApp: Boolean
+)
+
+data class LayoutInformation(
+    val layoutMeta: LayoutMeta,
+    val layoutData: LoginViewModel.Data
+)
+
+@Composable
+fun CustomRow(
+    layoutInformation: LayoutInformation
+) {
+    val openUrlLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        // Handle result if needed
+    }
+
+    Row(
+        modifier = Modifier.fillMaxWidth(0.8F),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.End
+    ) {
+        if (layoutInformation.layoutMeta.hasAboutApp)
+        {
             Button(
                 modifier = Modifier.width(120.dp),
                 onClick = {
-                // TODO: Handle About App click
-            }) {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(layoutInformation.layoutData.aboutAppUrl))
+                    openUrlLauncher.launch(intent)
+                }) {
                 Text(text = "About App")
             }
 
             Spacer(modifier = Modifier.width(20.dp))
+        }
 
-            Button(
-                modifier = Modifier.width(120.dp),
-                onClick = {
+        Button(
+            modifier = Modifier.width(120.dp),
+            onClick = {
                 // TODO: Handle Login click
             }) {
-                Text(text = "Login")
-            }
+            Text(text = "Login")
         }
     }
 }

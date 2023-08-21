@@ -15,6 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.google.firebase.FirebaseApp
+import com.google.firebase.ktx.initialize
 import com.tclow.composecurrencyconverter.presentation.convert.ConvertScreen
 import com.tclow.composecurrencyconverter.presentation.login.LoginScreen
 import com.tclow.composecurrencyconverter.ui.theme.ComposeCurrencyConverterTheme
@@ -25,6 +27,8 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        FirebaseApp.initializeApp(this)
         setContent {
             ComposeCurrencyConverterTheme {
                 // A surface container using the 'background' color from the theme
