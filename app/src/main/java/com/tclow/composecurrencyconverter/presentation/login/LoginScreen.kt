@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import com.tclow.composecurrencyconverter.presentation.login.model.LoginViewModel
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -91,7 +92,11 @@ fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()) {
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        //CustomRow(layoutInformation = layoutInformation!!)
+        when (layoutInformation)
+        {
+            null -> { /*Loading view*/ }
+            else -> CustomRow(layoutInformation = layoutInformation!!)
+        }
     }
 }
 

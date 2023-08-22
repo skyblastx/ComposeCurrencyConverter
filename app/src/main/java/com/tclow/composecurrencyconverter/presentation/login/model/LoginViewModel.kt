@@ -96,7 +96,7 @@ class LoginViewModel @Inject constructor(
         _dataFlow, _layoutFlow, _metaFlow
     ) { data, layout, meta ->
         val layoutMeta = LayoutMeta(
-            hasAboutApp = layout[meta.mode]!!
+            hasAboutApp = layout[meta.mode] ?: true
         )
         return@combine LayoutInformation(
             layoutMeta = layoutMeta,
