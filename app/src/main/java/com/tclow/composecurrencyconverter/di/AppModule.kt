@@ -1,19 +1,13 @@
 package com.tclow.composecurrencyconverter.di
 
-import android.app.Application
-import androidx.navigation.NavController
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.tclow.composecurrencyconverter.data.convert.CurrencyApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
-import kotlin.coroutines.coroutineContext
 
 @Module
 @InstallIn(SingletonComponent::class)
