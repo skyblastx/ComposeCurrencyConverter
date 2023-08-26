@@ -7,8 +7,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.getValue
-import com.tclow.composecurrencyconverter.presentation.login.LayoutInformation
-import com.tclow.composecurrencyconverter.presentation.login.LayoutMeta
+import com.tclow.composecurrencyconverter.utils.data.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -26,10 +25,6 @@ class LoginViewModel @Inject constructor(
     private val dataNode = database.getReference("ui/data")
     private val layoutNode = database.getReference("ui/layout")
     private val metaNode = database.getReference("ui/meta")
-
-    data class Data(val aboutAppUrl: String = "")
-
-    data class Meta(val mode: String = "")
 
     private val _dataFlow: Flow<Data> = callbackFlow {
         val listener = object : ValueEventListener {

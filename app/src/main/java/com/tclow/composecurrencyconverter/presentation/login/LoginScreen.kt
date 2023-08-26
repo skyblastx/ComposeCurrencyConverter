@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import com.tclow.composecurrencyconverter.presentation.login.model.LoginViewModel
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.tclow.composecurrencyconverter.utils.data.LayoutInformation
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -117,14 +118,7 @@ fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()) {
     }
 }
 
-data class LayoutMeta(
-    val hasAboutApp: Boolean
-)
 
-data class LayoutInformation(
-    val layoutMeta: LayoutMeta,
-    val layoutData: LoginViewModel.Data
-)
 
 @Composable
 fun CustomRow(
