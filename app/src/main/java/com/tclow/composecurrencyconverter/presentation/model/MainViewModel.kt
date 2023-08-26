@@ -30,7 +30,7 @@ class MainViewModel @Inject constructor(
     customNavigation: CustomNavigation,
     private val database: FirebaseDatabase
 ): ViewModel() {
-    val navigator = customNavigation
+    private val navigator = customNavigation
     val navigationChannel = customNavigation.navigationChannel
 
     private val dataNode = database.getReference("ui/data")
@@ -114,13 +114,11 @@ class MainViewModel @Inject constructor(
     {
         if (layoutInformationFlow.value == null)
         {
-            Log.d("MainViewModel", "flow is empty")
             delay(3000)
             routeToLogin() // Repeat if flow is still null value
         }
         else
         {
-            Log.d("MainViewModel", "flow is not empty")
             navigator.navigate(Screen.Login.fullRoute)
         }
     }

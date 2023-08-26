@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -35,8 +36,11 @@ import com.tclow.composecurrencyconverter.utils.navigation.CustomNavHost
 import com.tclow.composecurrencyconverter.utils.navigation.NavigationIntent
 import com.tclow.composecurrencyconverter.utils.navigation.composable
 import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -62,6 +66,8 @@ class MainActivity : ComponentActivity() {
 fun CurrencyConverterApp(viewModel: MainViewModel = hiltViewModel()) {
     ComposeCurrencyConverterTheme {
         val navController = rememberNavController()
+        val coroutineScope = rememberCoroutineScope()
+        val layoutInformation = viewModel.layoutInformationFlow.collectAsStateWithLifecycle()
 
         NavigationEff(
             navigationChannel = viewModel.navigationChannel,
@@ -73,11 +79,17 @@ fun CurrencyConverterApp(viewModel: MainViewModel = hiltViewModel()) {
             startDestination = Screen.Splash
         ) {
             composable(Screen.Splash) {
-                SplashScreen()
+                SplashScreen(
+                    onLaunchedEffect = {
+                        coroutineScope.launch {
+                            viewModel.routeToLogin()
+                        }
+                    }
+                )
             }
 
             composable(Screen.Login) {
-                LoginScreen()
+                LoginScreen(layoutInformation.value!!)
             }
 
             composable(Screen.Convert) {
@@ -88,9 +100,10 @@ fun CurrencyConverterApp(viewModel: MainViewModel = hiltViewModel()) {
 }
 
 @Composable
-fun SplashScreen(viewModel: MainViewModel = hiltViewModel()) {
+fun SplashScreen(
+    onLaunchedEffect: () -> Unit
+) {
 
-    viewModel.layoutInformationFlow.collectAsState()
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize()
@@ -104,7 +117,7 @@ fun SplashScreen(viewModel: MainViewModel = hiltViewModel()) {
         }
 
         LaunchedEffect(key1 = Unit) {
-            viewModel.routeToLogin()
+            onLaunchedEffect()
         }
     }
 }

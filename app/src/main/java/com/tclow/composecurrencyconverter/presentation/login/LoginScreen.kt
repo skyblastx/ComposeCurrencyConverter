@@ -43,11 +43,15 @@ import androidx.compose.ui.unit.dp
 import com.tclow.composecurrencyconverter.presentation.login.model.LoginViewModel
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.tclow.composecurrencyconverter.utils.Screen
 import com.tclow.composecurrencyconverter.utils.data.LayoutInformation
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()) {
+fun LoginScreen(
+    layoutInformation: LayoutInformation,
+    viewModel: LoginViewModel = hiltViewModel()
+) {
 
     var userId by remember {
         mutableStateOf("")
@@ -61,7 +65,6 @@ fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()) {
         mutableStateOf(false)
     }
     val keyboardController = LocalSoftwareKeyboardController.current
-    val layoutInformation by viewModel.layoutInformationFlow.collectAsStateWithLifecycle()
 
     Scaffold(topBar = {
         CenterAlignedTopAppBar(title = { Text(text = "Login") },
@@ -109,11 +112,7 @@ fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()) {
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            when (layoutInformation)
-            {
-                null -> { /*Loading view*/ }
-                else -> CustomRow(layoutInformation = layoutInformation!!)
-            }
+            CustomRow(layoutInformation = layoutInformation)
         }
     }
 }
@@ -169,5 +168,5 @@ fun CustomRow(
 @Preview
 @Composable
 fun LoginPreview() {
-    LoginScreen()
+    //LoginScreen()
 }
