@@ -1,6 +1,7 @@
 package com.tclow.composecurrencyconverter.di
 
 import com.tclow.composecurrencyconverter.data.convert.CurrencyApi
+import com.tclow.composecurrencyconverter.utils.data.BASE_URL
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -13,7 +14,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
-    private const val BASE_URL = "http://api.exchangeratesapi.io/v1/"
     @Singleton
     @Provides
     fun provideCurrencyApi(): CurrencyApi = Retrofit.Builder()

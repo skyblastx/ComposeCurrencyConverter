@@ -42,8 +42,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tclow.composecurrencyconverter.presentation.login.model.LoginViewModel
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.tclow.composecurrencyconverter.utils.Screen
 import com.tclow.composecurrencyconverter.utils.data.LayoutInformation
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
@@ -67,10 +65,12 @@ fun LoginScreen(
     val keyboardController = LocalSoftwareKeyboardController.current
 
     Scaffold(topBar = {
-        CenterAlignedTopAppBar(title = { Text(text = "Login") },
+        CenterAlignedTopAppBar(
+            title = { Text(text = "Login") },
             colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                 containerColor = MaterialTheme.colorScheme.primaryContainer
-            ))
+            )
+        )
     }) { paddingValues ->
         Column(
             modifier = Modifier
