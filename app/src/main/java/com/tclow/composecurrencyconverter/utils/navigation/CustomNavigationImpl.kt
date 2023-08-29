@@ -18,9 +18,19 @@ class CustomNavigationImpl @Inject constructor() : CustomNavigation {
         )
     }
 
-    override fun navigate(route: String) {
+    override fun navigate(
+        route: String,
+        popUpToRoute: String?,
+        inclusive: Boolean,
+        isSingleTop: Boolean
+    ) {
         navigationChannel.trySend(
-            NavigationIntent.Navigate(route)
+            NavigationIntent.Navigate(
+                route = route,
+                popUpToRoute = popUpToRoute,
+                inclusive = inclusive,
+                isSingleTop = isSingleTop
+            )
         )
     }
 }

@@ -4,10 +4,12 @@ import android.content.Intent
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -33,6 +35,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -42,6 +46,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tclow.composecurrencyconverter.presentation.login.model.LoginViewModel
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.tclow.composecurrencyconverter.utils.Screen
 import com.tclow.composecurrencyconverter.utils.data.LayoutInformation
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
@@ -62,6 +67,8 @@ fun LoginScreen(
     var showPassword by remember {
         mutableStateOf(false)
     }
+
+    val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
     Scaffold(topBar = {
@@ -74,8 +81,14 @@ fun LoginScreen(
     }) { paddingValues ->
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(paddingValues = paddingValues),
+                .fillMaxSize()
+                .padding(paddingValues = paddingValues)
+                .pointerInput(Unit) {
+                    detectTapGestures(
+                        onTap = {
+                            focusManager.clearFocus()
+                        }
+                    ) },
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -90,16 +103,24 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            OutlinedTextField(modifier = Modifier.fillMaxWidth(0.8F),
+            OutlinedTextField(
+                modifier = Modifier.fillMaxWidth(0.8F),
                 singleLine = true,
                 value = password,
                 visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
                 onValueChange = { password = it },
                 label = { Text("Password") },
                 keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Password, imeAction = ImeAction.Next
+                    keyboardType = KeyboardType.Password,
+                    imeAction = ImeAction.Next
                 ),
-                keyboardActions = KeyboardActions(onNext = { keyboardController?.hide() }),
+                keyboardActions = KeyboardActions(
+                    onNext = {
+                        keyboardController?.hide()
+                        // TODO: Handle login credentials
+                        viewModel.route(Screen.Convert)
+                    }
+                ),
                 trailingIcon = {
                     val icon =
                         if (showPassword) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
@@ -108,7 +129,8 @@ fun LoginScreen(
                     }) {
                         Icon(imageVector = icon, contentDescription = "")
                     }
-                })
+                }
+            )
 
             Spacer(modifier = Modifier.height(20.dp))
 
@@ -155,7 +177,7 @@ fun CustomRow(
         OutlinedButton(
             onClick = {
                 // TODO: Handle Login click
-                //viewModel.route()
+                viewModel.route(Screen.Convert)
             }, modifier = Modifier.width(120.dp), shape = RoundedCornerShape(percent = 50)
         ) {
             Text(

@@ -2,6 +2,8 @@ package com.tclow.composecurrencyconverter.data.convert.repository
 
 import com.tclow.composecurrencyconverter.data.convert.CurrencyApi
 import com.tclow.composecurrencyconverter.data.convert.model.CurrencyResponse
+import com.tclow.composecurrencyconverter.data.database.dao.CurrencyRate
+import com.tclow.composecurrencyconverter.data.database.dao.RateDAO
 import com.tclow.composecurrencyconverter.domain.convert.repository.CurrencyRepository
 import com.tclow.composecurrencyconverter.utils.Resource
 import com.tclow.composecurrencyconverter.utils.data.ACCESS_KEY
@@ -9,8 +11,13 @@ import java.lang.Exception
 import javax.inject.Inject
 
 class CurrencyRepositoryImpl @Inject constructor(
-    private val api: CurrencyApi
+    private val api: CurrencyApi,
+    private val dao: RateDAO
 ) : CurrencyRepository {
+
+    //===============================
+    // Api functions
+    //===============================
     override suspend fun getRates(): Resource<CurrencyResponse> {
         return try {
             val data = getDataMapForQuery(null)
@@ -63,5 +70,17 @@ class CurrencyRepositoryImpl @Inject constructor(
         if (!base.isNullOrEmpty()) { data["base"] = base }
 
         return data
+    }
+
+    //===============================
+    // Database functions
+    //===============================
+
+    override suspend fun insertRates(rate: CurrencyRate) {
+        dao.insertRates(rate)
+    }
+
+    override suspend fun getRatesWithDate(date: String): List<CurrencyRate> {
+        return dao.getRatesWithDate(date = date)
     }
 }

@@ -1,8 +1,6 @@
 package com.tclow.composecurrencyconverter.data.database
 
-import android.content.Context
 import androidx.room.Database
-import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.tclow.composecurrencyconverter.data.database.converter.HashMapConverter
@@ -20,20 +18,9 @@ import com.tclow.composecurrencyconverter.data.database.dao.RateDAO
 )
 abstract class RateDatabase: RoomDatabase() {
 
-    companion object{
-        var rateDatabase: RateDatabase? = null
+    abstract val rateDAO: RateDAO
 
-        @Synchronized
-        fun getDatabase(context: Context): RateDatabase {
-            if (rateDatabase == null) {
-                rateDatabase = Room.databaseBuilder(
-                    context,
-                    RateDatabase::class.java,
-                    "rates.db"
-                ).build()
-            }
-            return rateDatabase!!
-        }
+    companion object{
+        const val DATABASE_NAME = "rates_db"
     }
-    abstract fun rateDAO(): RateDAO
 }

@@ -1,6 +1,5 @@
 package com.tclow.composecurrencyconverter.presentation.model
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.database.DataSnapshot
@@ -15,8 +14,8 @@ import com.tclow.composecurrencyconverter.utils.data.LayoutMeta
 import com.tclow.composecurrencyconverter.utils.data.Meta
 import com.tclow.composecurrencyconverter.utils.navigation.CustomNavigation
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.NonCancellable.cancel
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -112,14 +111,24 @@ class MainViewModel @Inject constructor(
 
     suspend fun routeToLogin()
     {
-        if (layoutInformationFlow.value == null)
-        {
-            delay(3000)
-            routeToLogin() // Repeat if flow is still null value
+        layoutInformationFlow.collect {
+            if (layoutInformationFlow.value != null) {
+                navigator.navigate(
+                    route = Screen.Login.fullRoute,
+                    popUpToRoute = Screen.Splash.fullRoute,
+                    inclusive = true
+                )
+                cancel()
+            }
         }
-        else
-        {
-            navigator.navigate(Screen.Login.fullRoute)
-        }
+//        if (layoutInformationFlow.value == null)
+//        {
+//            delay(3000)
+//            routeToLogin() // Repeat if flow is still null value
+//        }
+//        else
+//        {
+//            navigator.navigate(Screen.Login.fullRoute)
+//        }
     }
 }
