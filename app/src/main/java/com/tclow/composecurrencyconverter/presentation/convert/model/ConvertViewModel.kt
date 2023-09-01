@@ -2,6 +2,7 @@ package com.tclow.composecurrencyconverter.presentation.convert.model
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.database.FirebaseDatabase
 import com.tclow.composecurrencyconverter.domain.convert.use_case.ConvertUseCases
 import com.tclow.composecurrencyconverter.presentation.convert.ConvertEvent
 import com.tclow.composecurrencyconverter.utils.Screen
@@ -17,8 +18,10 @@ import javax.inject.Inject
 @HiltViewModel
 class ConvertViewModel @Inject constructor(
     private val navigation: CustomNavigation,
+    private val database: FirebaseDatabase,
     private val convertUseCases: ConvertUseCases
 ): ViewModel() {
+    private val userNode = database.getReference("users")
 
     private val _conversion = MutableStateFlow<ConvertEvent>(ConvertEvent.Empty)
     val conversion: StateFlow<ConvertEvent> = _conversion
@@ -41,7 +44,8 @@ class ConvertViewModel @Inject constructor(
     }
 
     fun logout() {
-        // TODO: logout
+        // Set logout status for database to simulate sso state
+        userNode.child("ss").child("isLoggedIn").setValue(false)
         navigation.navigate(
             route = Screen.Login.fullRoute,
             popUpToRoute = Screen.Convert.fullRoute,

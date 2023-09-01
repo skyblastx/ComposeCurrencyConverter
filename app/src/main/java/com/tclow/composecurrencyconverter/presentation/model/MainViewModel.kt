@@ -32,6 +32,10 @@ class MainViewModel @Inject constructor(
     private val navigator = customNavigation
     val navigationChannel = customNavigation.navigationChannel
 
+    //============================================
+    // Layout Info
+    //============================================
+
     private val dataNode = database.getReference("ui/data")
     private val layoutNode = database.getReference("ui/layout")
     private val metaNode = database.getReference("ui/meta")
@@ -121,14 +125,5 @@ class MainViewModel @Inject constructor(
                 cancel()
             }
         }
-//        if (layoutInformationFlow.value == null)
-//        {
-//            delay(3000)
-//            routeToLogin() // Repeat if flow is still null value
-//        }
-//        else
-//        {
-//            navigator.navigate(Screen.Login.fullRoute)
-//        }
     }
 }

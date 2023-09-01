@@ -20,7 +20,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedButton
-import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -29,6 +28,7 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -48,6 +48,9 @@ import com.tclow.composecurrencyconverter.presentation.login.model.LoginViewMode
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.tclow.composecurrencyconverter.utils.Screen
 import com.tclow.composecurrencyconverter.utils.data.LayoutInformation
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -68,8 +71,13 @@ fun LoginScreen(
         mutableStateOf(false)
     }
 
+    var authState by remember {
+        mutableStateOf(mapOf("" to ""))
+    }
+
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
+    val coroutineScope = rememberCoroutineScope()
 
     Scaffold(topBar = {
         CenterAlignedTopAppBar(
@@ -79,6 +87,23 @@ fun LoginScreen(
             )
         )
     }) { paddingValues ->
+
+        LaunchedEffect(key1 = Unit) {
+            viewModel.loginState.collect { event ->
+                when (event) {
+                    is LoginEvent.Success -> {
+                        viewModel.routeToConvert()
+                    }
+
+                    is LoginEvent.Failure -> {
+                        authState = mapOf(event.source to event.errorMsg)
+                    }
+
+                    else -> {}
+                }
+            }
+        }
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -88,7 +113,8 @@ fun LoginScreen(
                         onTap = {
                             focusManager.clearFocus()
                         }
-                    ) },
+                    )
+                },
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -99,6 +125,16 @@ fun LoginScreen(
                 keyboardOptions = KeyboardOptions(
                     imeAction = ImeAction.Next
                 ),
+                isError = authState.containsKey("ID"),
+                supportingText = {
+                    if (authState.containsKey("ID")) {
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = authState.getValue("ID"),
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    }
+                },
                 label = { Text("User ID") })
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -108,19 +144,37 @@ fun LoginScreen(
                 singleLine = true,
                 value = password,
                 visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
-                onValueChange = { password = it },
+                onValueChange = {
+                    // Limit PIN length to 6 characters
+                    if (it.length <= 6) password = it
+                },
                 label = { Text("Password") },
                 keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Password,
+                    keyboardType = KeyboardType.NumberPassword,
                     imeAction = ImeAction.Next
                 ),
                 keyboardActions = KeyboardActions(
                     onNext = {
                         keyboardController?.hide()
-                        // TODO: Handle login credentials
-                        viewModel.route(Screen.Convert)
+                        // Login
+                        coroutineScope.launch {
+                            viewModel.validateUser(
+                                userID = userId,
+                                password = password
+                            )
+                        }
                     }
                 ),
+                isError = authState.containsKey("PIN"),
+                supportingText = {
+                    if (authState.containsKey("PIN")) {
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = authState.getValue("PIN"),
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    }
+                },
                 trailingIcon = {
                     val icon =
                         if (showPassword) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
@@ -134,17 +188,24 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            CustomRow(layoutInformation = layoutInformation)
+            CustomRow(
+                layoutInformation = layoutInformation,
+                coroutineScope = coroutineScope,
+                userId = userId,
+                password = password
+            )
         }
     }
 }
 
 
-
 @Composable
 fun CustomRow(
     viewModel: LoginViewModel = hiltViewModel(),
-    layoutInformation: LayoutInformation
+    layoutInformation: LayoutInformation,
+    coroutineScope: CoroutineScope,
+    userId: String,
+    password: String
 ) {
     val openUrlLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
@@ -176,8 +237,14 @@ fun CustomRow(
 
         OutlinedButton(
             onClick = {
-                // TODO: Handle Login click
-                viewModel.route(Screen.Convert)
+                // Login
+                coroutineScope.launch {
+                    viewModel.validateUser(
+                        userID = userId,
+                        password = password
+                    )
+                }
+//                viewModel.route(Screen.Convert)
             }, modifier = Modifier.width(120.dp), shape = RoundedCornerShape(percent = 50)
         ) {
             Text(
