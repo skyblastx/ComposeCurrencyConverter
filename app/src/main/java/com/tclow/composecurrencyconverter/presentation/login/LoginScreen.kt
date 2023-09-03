@@ -48,6 +48,7 @@ import com.tclow.composecurrencyconverter.presentation.login.model.LoginViewMode
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.tclow.composecurrencyconverter.utils.Screen
 import com.tclow.composecurrencyconverter.utils.data.LayoutInformation
+import com.tclow.composecurrencyconverter.utils.data.Users
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -56,6 +57,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun LoginScreen(
     layoutInformation: LayoutInformation,
+    users: List<Users>,
+    onNavigate: (currentUser: Users) -> Unit,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
 
@@ -92,7 +95,7 @@ fun LoginScreen(
             viewModel.loginState.collect { event ->
                 when (event) {
                     is LoginEvent.Success -> {
-                        viewModel.routeToConvert()
+                        onNavigate(event.user)
                     }
 
                     is LoginEvent.Failure -> {
@@ -160,7 +163,8 @@ fun LoginScreen(
                         coroutineScope.launch {
                             viewModel.validateUser(
                                 userID = userId,
-                                password = password
+                                password = password,
+                                users = users
                             )
                         }
                     }
@@ -191,6 +195,7 @@ fun LoginScreen(
             CustomRow(
                 layoutInformation = layoutInformation,
                 coroutineScope = coroutineScope,
+                users = users,
                 userId = userId,
                 password = password
             )
@@ -204,6 +209,7 @@ fun CustomRow(
     viewModel: LoginViewModel = hiltViewModel(),
     layoutInformation: LayoutInformation,
     coroutineScope: CoroutineScope,
+    users: List<Users>,
     userId: String,
     password: String
 ) {
@@ -241,10 +247,10 @@ fun CustomRow(
                 coroutineScope.launch {
                     viewModel.validateUser(
                         userID = userId,
-                        password = password
+                        password = password,
+                        users = users
                     )
                 }
-//                viewModel.route(Screen.Convert)
             }, modifier = Modifier.width(120.dp), shape = RoundedCornerShape(percent = 50)
         ) {
             Text(

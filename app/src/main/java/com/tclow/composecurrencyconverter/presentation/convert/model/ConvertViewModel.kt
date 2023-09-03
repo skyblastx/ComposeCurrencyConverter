@@ -18,10 +18,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ConvertViewModel @Inject constructor(
     private val navigation: CustomNavigation,
-    private val database: FirebaseDatabase,
     private val convertUseCases: ConvertUseCases
 ): ViewModel() {
-    private val userNode = database.getReference("users")
 
     private val _conversion = MutableStateFlow<ConvertEvent>(ConvertEvent.Empty)
     val conversion: StateFlow<ConvertEvent> = _conversion
@@ -41,15 +39,5 @@ class ConvertViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             _conversion.value = convertUseCases.convertRates(strAmount, fromCurrency, toCurrency)
         }
-    }
-
-    fun logout() {
-        // Set logout status for database to simulate sso state
-        userNode.child("ss").child("isLoggedIn").setValue(false)
-        navigation.navigate(
-            route = Screen.Login.fullRoute,
-            popUpToRoute = Screen.Convert.fullRoute,
-            inclusive = true
-        )
     }
 }

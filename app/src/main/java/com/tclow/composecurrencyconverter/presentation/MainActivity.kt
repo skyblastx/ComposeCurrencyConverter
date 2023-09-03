@@ -61,7 +61,10 @@ fun CurrencyConverterApp(viewModel: MainViewModel = hiltViewModel()) {
     ComposeCurrencyConverterTheme {
         val navController = rememberNavController()
         val coroutineScope = rememberCoroutineScope()
+
+        // Collect data from database
         val layoutInformation = viewModel.layoutInformationFlow.collectAsStateWithLifecycle()
+        val userInformation = viewModel.userFlow.collectAsStateWithLifecycle()
 
         NavigationEff(
             navigationChannel = viewModel.navigationChannel,
@@ -83,11 +86,23 @@ fun CurrencyConverterApp(viewModel: MainViewModel = hiltViewModel()) {
             }
 
             composable(Screen.Login) {
-                LoginScreen(layoutInformation.value!!)
+                LoginScreen(
+                    users = userInformation.value!!,
+                    layoutInformation = layoutInformation.value!!,
+                    onNavigate = { user ->
+                        viewModel.setCurrentUser(user)
+                        viewModel.routeToConvert()
+                    }
+                )
             }
 
             composable(Screen.Convert) {
-                ConvertScreen()
+                ConvertScreen(
+                    user = viewModel.getCurrentUser(),
+                    onLogout = {
+                        viewModel.logout()
+                    }
+                )
             }
         }
     }

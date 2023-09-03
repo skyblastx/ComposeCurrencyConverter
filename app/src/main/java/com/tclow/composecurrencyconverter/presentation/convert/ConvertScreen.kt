@@ -42,6 +42,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.owlbuddy.www.countrycodechooser.CountryCodeChooser
 import com.owlbuddy.www.countrycodechooser.utils.enums.CountryCodeType
 import com.tclow.composecurrencyconverter.presentation.convert.model.ConvertViewModel
+import com.tclow.composecurrencyconverter.utils.data.Users
 import java.util.Currency
 import java.util.Locale
 
@@ -53,6 +54,8 @@ private data class ResultWithColor(
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun ConvertScreen(
+    user: Users,
+    onLogout: () -> Unit,
     viewModel: ConvertViewModel = hiltViewModel()
 ) {
     var strAmount by remember {
@@ -88,8 +91,7 @@ fun ConvertScreen(
                 navigationIcon = {
                     TextButton(
                         onClick = {
-                            // TODO: logout
-                            viewModel.logout()
+                            onLogout()
                         }
                     ) {
                         Text(
@@ -150,7 +152,7 @@ fun ConvertScreen(
 
             Text(
                 fontSize = 30.sp,
-                text = "Welcome back, user"
+                text = "Welcome back, ${user.userInfo?.username}"
             )
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -300,8 +302,8 @@ fun ConvertScreen(
     }
 }
 
-@Preview
-@Composable
-fun ConvertPreview() {
-    ConvertScreen()
-}
+//@Preview
+//@Composable
+//fun ConvertPreview() {
+//    ConvertScreen()
+//}
