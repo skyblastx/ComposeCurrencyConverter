@@ -8,6 +8,7 @@ import com.tclow.composecurrencyconverter.domain.convert.repository.CurrencyRepo
 import com.tclow.composecurrencyconverter.utils.Resource
 import com.tclow.composecurrencyconverter.utils.data.ACCESS_KEY
 import java.lang.Exception
+import java.time.LocalDate
 import javax.inject.Inject
 
 class CurrencyRepositoryImpl @Inject constructor(
@@ -82,5 +83,12 @@ class CurrencyRepositoryImpl @Inject constructor(
 
     override suspend fun getRatesWithDate(date: String): List<CurrencyRate> {
         return dao.getRatesWithDate(date = date)
+    }
+
+    override suspend fun getMissingDates(): List<String> {
+        val todayDate = LocalDate.now()
+        val oneWeekAgoDate = todayDate.minusDays(6)
+
+        return dao.getMissingDates(oneWeekAgoDate.toString(), todayDate.toString())
     }
 }

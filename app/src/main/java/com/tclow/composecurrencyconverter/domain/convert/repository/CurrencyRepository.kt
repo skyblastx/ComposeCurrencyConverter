@@ -20,4 +20,5 @@ interface CurrencyRepository {
 
     suspend fun getRatesWithDate(date: String): List<CurrencyRate>
 
+    suspend fun getMissingDates(): List<String>
 }
