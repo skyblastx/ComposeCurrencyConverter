@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,6 +24,8 @@ import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DoNotDisturbAlt
+import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -35,6 +38,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.VectorPainter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -46,6 +51,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tclow.composecurrencyconverter.presentation.login.model.LoginViewModel
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import com.tclow.composecurrencyconverter.utils.Screen
 import com.tclow.composecurrencyconverter.utils.data.LayoutInformation
 import com.tclow.composecurrencyconverter.utils.data.Users
@@ -199,6 +205,19 @@ fun LoginScreen(
                 userId = userId,
                 password = password
             )
+
+            Spacer(modifier = Modifier.height(50.dp))
+
+            AsyncImage(
+                model = layoutInformation.layoutData.imageUrl,
+                contentDescription = "Banner",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        start = 20.dp,
+                        end = 20.dp
+                    )
+            )
         }
     }
 }
@@ -251,10 +270,13 @@ fun CustomRow(
                         users = users
                     )
                 }
-            }, modifier = Modifier.width(120.dp), shape = RoundedCornerShape(percent = 50)
+            },
+            modifier = Modifier.width(120.dp),
+            shape = RoundedCornerShape(percent = 50),
+            border = BorderStroke(1.dp, layoutInformation.layoutMeta.btnLoginColor)
         ) {
             Text(
-                text = "Login", color = Color.Black
+                text = "Login", color = layoutInformation.layoutMeta.btnLoginColor
             )
         }
     }

@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -61,6 +62,9 @@ class MainViewModel @Inject constructor(
                 val data = Data().copy(
                     aboutAppUrl = snapshot.children.find {
                         it.key == "aboutAppUrl"
+                    }!!.value.toString(),
+                    imageUrl = snapshot.children.find {
+                        it.key == "imageUrl"
                     }!!.value.toString()
                 )
                 trySend(data)
@@ -75,13 +79,28 @@ class MainViewModel @Inject constructor(
         dataNode.addValueEventListener(listener)
         awaitClose { dataNode.removeEventListener(listener) }
     }
-    private val _layoutFlow: Flow<Map<String, Boolean>> = callbackFlow {
+    private val _layoutFlow: Flow<Map<String, LayoutMeta>> = callbackFlow {
 
-        fun parse(snapshot: DataSnapshot): Boolean {
-            val test = snapshot.children.find {
+        fun parse(snapshot: DataSnapshot): LayoutMeta {
+            val btnLoginColor = snapshot.children.find {
+                it.key == "btnLoginColor"
+            }!!.getValue<String>()!!
+            val hasAboutApp = snapshot.children.find {
                 it.key == "hasAboutApp"
             }!!.getValue<Boolean>()!!
-            return test
+            return LayoutMeta(
+                btnLoginColor = // Map color from string
+                when (btnLoginColor) {
+                    "red" -> {
+                        Color.Red
+                    }
+                    "blue" -> {
+                        Color.Blue
+                    }
+                    else -> Color.Black
+                },
+                hasAboutApp = hasAboutApp
+            )
         }
 
         val listener = object : ValueEventListener {
@@ -120,7 +139,8 @@ class MainViewModel @Inject constructor(
         _dataFlow, _layoutFlow, _metaFlow
     ) { data, layout, meta ->
         val layoutMeta = LayoutMeta(
-            hasAboutApp = layout[meta.mode] ?: true
+            btnLoginColor = layout[meta.mode]?.btnLoginColor ?: Color.Black,
+            hasAboutApp = layout[meta.mode]?.hasAboutApp ?: true
         )
         return@combine LayoutInformation(
             layoutMeta = layoutMeta,

@@ -104,6 +104,10 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.2.2"))
     implementation("com.google.firebase:firebase-analytics-ktx")
 
+    // Image Loading lib
+    implementation("io.coil-kt:coil-compose:2.4.0")
+
+    // Country Code Picker lib
     implementation("com.github.ParveshSandila:CountryCodeChooser:1.0.2")
 
     // Test Dependencies
